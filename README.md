@@ -2,7 +2,7 @@
 
 
 # # Imagem da Topologia 
-(/image/topologia.jpg?raw=true)
+![Topologia](/image/topologia.jpg?raw=true)
 
 
 # # Como Realizar um load Balance simples com Docker
