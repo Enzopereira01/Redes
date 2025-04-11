@@ -1,11 +1,11 @@
 # Redes
 
 
-# # Imagem da Topologia 
+#  Imagem da Topologia 
 ![Topologia](/image/topologia.jpg?raw=true)
 
 
-# # Como Realizar um load Balance simples com Docker
+#  Como Realizar um load Balance simples com Docker
 
 1. **Atualizar pacotes**:
 ```bash
