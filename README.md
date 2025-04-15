@@ -118,7 +118,11 @@ http {
 ```
 4. Rodar tudo
 ```bash
-sudo docker compose up --build -d
+sudo docker compose up -d
+```
+(Opicional) - Caso queira parar o docker compose utilize:
+```bash
+sudo docker compose down
 ```
 
 Agora é só entrar no site com o seu IPv4 Publico da sua instância.
