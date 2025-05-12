@@ -341,17 +341,6 @@ http://<IP-PUBLICO-DA-EC2>/
 
 ---
 
-## 📦 Exemplo de Build manual
-
-Se desejar buildar e testar o container separadamente:
-
-```bash
-docker build -t flask-app .
-docker run -p 5000:5000 flask-app
-```
-
----
-
 ## 🛠️ Tecnologias utilizadas
 
 - Python 3.10
@@ -362,9 +351,4 @@ docker run -p 5000:5000 flask-app
 
 ---
 
-## 📄 Licença
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
-
----
 
