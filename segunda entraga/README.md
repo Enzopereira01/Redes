@@ -55,32 +55,36 @@ Garanta que sua RDS esteja acessível a partir do IP público da instância EC2 
 
  docker-compose.yml
 ```bash
+
 version: '3.8'
 
 services:
   app1:
     build: .
     environment:
-      DB_HOST: database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      DB_USER: admin
-      DB_PASS: fatec1234
-      DB_NAME: meubanco
+      - INSTANCE_NAME=app1
+      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
+      - DB_USER=admin
+      - DB_PASS=fatec1234
+      - DB_NAME=meubanco
 
   app2:
     build: .
     environment:
-      DB_HOST: database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      DB_USER: admin
-      DB_PASS: fatec1234
-      DB_NAME: meubanco
+      - INSTANCE_NAME=app2
+      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
+      - DB_USER=admin
+      - DB_PASS=fatec1234
+      - DB_NAME=meubanco
 
   app3:
     build: .
     environment:
-      DB_HOST: database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      DB_USER: admin
-      DB_PASS: fatec1234
-      DB_NAME: meubanco
+      - INSTANCE_NAME=app3
+      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
+      - DB_USER=admin
+      - DB_PASS=fatec1234
+      - DB_NAME=meubanco
 
   nginx:
     image: nginx:latest
@@ -110,6 +114,8 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 
 ```
+
+default.conf
 
 ```bash
 upstream flaskapp {
@@ -144,15 +150,7 @@ db_config = {
     'database': os.environ.get('DB_NAME', 'meubanco')
 }
 
-@app.route('/usuarios')
-def listar_usuarios():
-    conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT nome, email FROM usuarios")
-    usuarios = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('usuarios.html', usuarios=usuarios)
+instance_name = os.environ.get('INSTANCE_NAME', 'instancia-desconhecida')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -162,14 +160,33 @@ def index():
 
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nome VARCHAR(100),
+                email VARCHAR(100)
+            )
+        """)
         cursor.execute("INSERT INTO usuarios (nome, email) VALUES (%s, %s)", (nome, email))
         conn.commit()
         cursor.close()
         conn.close()
 
-        return redirect(url_for('listar_usuarios'))
+        return redirect(url_for('usuarios'))
 
-    return render_template('form.html')
+    return render_template('form.html', instancia=instance_name)
+
+@app.route('/usuarios')
+def usuarios():
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id, nome, email FROM usuarios")
+    usuarios = cursor.fetchall()
+    cursor.close()
+
+
+    return render_template('usuarios.html', usuarios=usuarios, instancia=instance_name)
 
 @app.route('/deletar', methods=['GET'])
 def deletar_usuario_page():
@@ -179,7 +196,7 @@ def deletar_usuario_page():
     usuarios = cursor.fetchall()
     cursor.close()
     conn.close()
-    return render_template('deletar.html', usuarios=usuarios)
+    return render_template('deletar.html', usuarios=usuarios, instancia=instance_name)
 
 @app.route('/deletar/<int:id>', methods=['POST'])
 def deletar_usuario(id):
@@ -189,10 +206,10 @@ def deletar_usuario(id):
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect(url_for('deletar_usuario_page'))
+    return redirect(url_for('usuarios'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 ```
 
@@ -216,6 +233,8 @@ deletar.html
         <a href="/deletar">Excluir Usuários</a>
     </nav>
     <h1>Excluir Usuários</h1>
+    <p><strong>Intância ativa:</strong> {{instancia}}</p>
+
     <table border="1">
         <tr>
             <th>Nome</th>
@@ -252,6 +271,7 @@ form.html
         <a href="/deletar">Excluir Usuários</a>
     </nav>
     <h1>Cadastro de Usuário</h1>
+    <p><strong>Intância ativa:</strong> {{instancia}}</p>
     <form method="POST">
         <label>Nome:</label><br>
         <input type="text" name="nome"><br>
@@ -278,6 +298,7 @@ usuarios.html
         <a href="/deletar">Excluir Usuários</a>
     </nav>
     <h1>Lista de Usuários</h1>
+    <p><strong>Intância ativa:</strong> {{instancia}}</p>
     <table border="1">
         <tr>
             <th>Nome</th>
@@ -350,5 +371,14 @@ http://<IP-PUBLICO-DA-EC2>/
 - MySQL (AWS RDS)
 
 ---
+
+## Situacional
+
+ Casso ocorra algum problema quando for renicinar o compose com por conta de alguma alteração realize os seguintes comandos
+
+```bash
+sudo docker-compose down --volumes --remove-orphans
+sudo docker system prune -a -f
+```
 
 
