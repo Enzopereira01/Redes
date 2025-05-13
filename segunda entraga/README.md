@@ -53,7 +53,7 @@ Garanta que sua RDS esteja acessível a partir do IP público da instância EC2 
 
 1. O que vai possuir em cada arquivo:
 
- docker-compose.yml
+ docker-compose.yml :
 ```bash
 
 version: '3.8'
@@ -63,28 +63,28 @@ services:
     build: .
     environment:
       - INSTANCE_NAME=app1
-      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      - DB_USER=admin
-      - DB_PASS=fatec1234
-      - DB_NAME=meubanco
+      - DB_HOST=<colocar o seu endpoint>
+      - DB_USER=<colocar o seu usuário do banco de dados>
+      - DB_PASS=<colocar a sua senha do banco de dados>
+      - DB_NAME=<>
 
   app2:
     build: .
     environment:
       - INSTANCE_NAME=app2
-      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      - DB_USER=admin
-      - DB_PASS=fatec1234
-      - DB_NAME=meubanco
+      - DB_HOST=<colocar o seu endpoint>
+      - DB_USER=<colocar o seu usuário do banco de dados>
+      - DB_PASS=<colocar a sua senha do banco de dados>
+      - DB_NAME=<o nome do seu banco>
 
   app3:
     build: .
     environment:
       - INSTANCE_NAME=app3
-      - DB_HOST=database-2.c29urnittqn0.us-east-1.rds.amazonaws.com
-      - DB_USER=admin
-      - DB_PASS=fatec1234
-      - DB_NAME=meubanco
+      - DB_HOST=<colocar o seu endpoint>
+      - DB_USER=<colocar o seu usuário do banco de dados>
+      - DB_PASS=<colocar a sua senha do banco de dados>
+      - DB_NAME=<o nome do seu banco>
 
   nginx:
     image: nginx:latest
@@ -99,7 +99,7 @@ services:
 
 ```
 
-Dockerfile
+Dockerfile :
 ```bash
 FROM python:3.10-slim
 
@@ -115,8 +115,7 @@ CMD ["python", "app.py"]
 
 ```
 
-default.conf
-
+default.conf :
 ```bash
 upstream flaskapp {
     server app1:5000;
@@ -213,13 +212,13 @@ if __name__ == '__main__':
 
 ```
 
-requirements.txt
+requirements.txt :
 ```bash
   Flask
 mysql-connector-python
 ```
 
-deletar.html
+deletar.html :
 ```bash
 <!DOCTYPE html>
 <html>
@@ -257,7 +256,8 @@ deletar.html
 </html>
 
 ```
-form.html
+
+form.html :
 ```bash
 <!DOCTYPE html>
 <html>
@@ -284,7 +284,7 @@ form.html
 
 ```
 
-usuarios.html
+usuarios.html :
 ```bash
 <!DOCTYPE html>
 <html>
@@ -330,6 +330,8 @@ email VARCHAR(100) NOT NULL
 
 SELECT * FROM usuarios;
 ```
+obs: o banco que está sendo utilizado no rds é o mysql
+
 
 3. Suba os containers:
 
@@ -374,7 +376,7 @@ http://<IP-PUBLICO-DA-EC2>/
 
 ## Situacional
 
- Casso ocorra algum problema quando for renicinar o compose com por conta de alguma alteração realize os seguintes comandos
+ Casso ocorra algum problema quando for renicinar o compose com por conta de alguma alteração realize os seguintes comandos:
 
 ```bash
 sudo docker-compose down --volumes --remove-orphans
