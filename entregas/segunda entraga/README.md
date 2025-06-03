@@ -232,7 +232,7 @@ deletar.html :
         <a href="/deletar">Excluir Usuários</a>
     </nav>
     <h1>Excluir Usuários</h1>
-    <p><strong>Intância ativa:</strong> {{instancia}}</p>
+    <p><strong>Instância ativa:</strong> {{ instancia }}</p>
 
     <table border="1">
         <tr>
